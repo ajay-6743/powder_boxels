@@ -8,7 +8,7 @@ All notable changes to this project are recorded here.
 
 ### Added
 
-- First release of Powder Box
+- First release of Pixel Box
 - Density-based physics, burning, melting, dissolving, plant growth and chain-reaction explosions
 - Mouse and touch drawing with adjustable brush size, pause and clear
 - Window resizing that keeps the world
