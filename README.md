@@ -1,2 +1,2 @@
-Pixel Boxels
+# Pixel Boxels
 An sandbox game 
