@@ -1,4 +1,4 @@
-# Contributing to Powder Box
+# Contributing to Pixel Box
 
 Thanks for your interest in improving Powder Box. Bug reports, ideas and pull requests are all welcome.
 
