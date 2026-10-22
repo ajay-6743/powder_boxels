@@ -1,4 +1,4 @@
-# Pixel Boxels
+[# Pixel Boxels](Power_Box.html)
 
 A falling-sand sandbox game for the browser, inspired by Sandboxels. Pour sand, water, lava and acid, start fires, blow things up, and watch 22 elements react to each other in real time.
 
