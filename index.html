@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pixels Boxels</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+  <h1>Pixel Boxels</h1>
+  <span id="st"></span>
+  <span id="tools"></span>
+  <label>Brush <input id="br" type="range" min="1" max="12" value="4"></label>
+  <button id="pz">Pause</button>
+  <button id="cl">Clear</button>
+  <select id="sl"><option>1</option><option>2</option><option>3</option></select>
+  <button id="sv">Save</button>
+  <button id="ld">Load</button>
+  <button id="lu">Lookup</button>
+</header>
+<div id="wrap">
+  <canvas id="cv"></canvas>
+  <div id="hint">Pick a category and an element below. Heat and Cold change temperature.<br>Life walks, swims and flies. Lookup searches every element and its reactions.</div>
+</div>
+<div id="tabs"></div>
+<div id="pal"></div>
+<dialog id="lk">
+  <input id="q" placeholder="Search elements" autocomplete="off">
+  <div id="ls"></div>
+  <button id="xx">Close</button>
+</dialog>
+<!-- Scripts share one global scope, so the load order below matters. -->
+<script src="js/util.js"></script>
+<!-- Raw data tables -->
+<script src="js/data/elements.js"></script>
+<script src="js/data/reactions.js"></script>
+<script src="js/data/periodic-table.js"></script>
+<script src="js/data/special-elements.js"></script>
+<script src="js/data/extra-reactions.js"></script>
+<!-- Generators: expand the data into thousands of elements -->
+<script src="js/generators/helpers.js"></script>
+<script src="js/generators/periodic-table.js"></script>
+<script src="js/generators/salts.js"></script>
+<script src="js/generators/organic.js"></script>
+<script src="js/generators/alloys.js"></script>
+<script src="js/generators/minerals.js"></script>
+<script src="js/generators/life.js"></script>
+<script src="js/generators/food.js"></script>
+<script src="js/generators/special.js"></script>
+<!-- Engine: element tables, reactions, simulation, drawing -->
+<script src="js/engine/tables.js"></script>
+<script src="js/engine/reactions.js"></script>
+<script src="js/engine/state.js"></script>
+<script src="js/engine/simulation.js"></script>
+<script src="js/engine/renderer.js"></script>
+<!-- User interface and start-up -->
+<script src="js/ui/input.js"></script>
+<script src="js/ui/palette.js"></script>
+<script src="js/ui/lookup.js"></script>
+<script src="js/ui/controls.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

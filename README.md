@@ -1,108 +1,136 @@
-# Pixel Boxels 
+# Powder Box
 
-A falling-sand sandbox game for the browser, inspired by Sandboxels. Pour sand, water, lava and acid, start fires, blow things up, and watch 22 elements react to each other in real time.
+A falling-sand physics sandbox that runs entirely in the browser. Pour powders, liquids and gases onto the canvas, heat or freeze them, and watch them melt, boil, burn, explode and react. There are more than 5,700 elements, from sand and water to the full periodic table, salts, organic compounds, alloys, minerals, animals, plants and food.
 
-The whole game is one HTML file. No build step, no dependencies, no network requests.
+No build step, no dependencies, no server needed.
 
-## Features
+## Run it
 
-- 22 elements plus an eraser, grouped into powders, liquids, solids and gases
-- Density-based physics: sand sinks through water, oil floats on water, gases rise
-- Chain reactions: fire spreads through wood, plants, oil, gas and gunpowder, and TNT sets off nearby TNT
-- Living plants that grow by drinking water
-- Mouse and touch drawing with an adjustable brush, plus pause and clear
-- The world resizes with the window and keeps what you built
-- Light and dark interface that follows your system setting
+Open `index.html` in a modern browser.
 
-## Play
+If you would rather use a local server, any static one works:
 
-**Locally:** download the file and open it in any modern browser. No server needed.
+```bash
+python3 -m http.server 8000
+# then open http://localhost:8000
+```
 
-## Controls
+To publish it, push the repo to GitHub and turn on **Settings → Pages → Deploy from a branch → `main` / `(root)`**.
 
-| Action | How |
-| --- | --- |
-| Choose an element | Click or tap a button in the palette at the bottom |
-| Draw | Click and drag, or touch and drag. Hold still to keep pouring |
-| Brush size | Slider in the header, from 1 to 12 |
-| Erase | Select **Erase** and draw over anything |
-| Pause or resume | **Pause** / **Play** button. You can still draw while paused |
-| Wipe the world | **Clear** button |
+## Using it
 
-Drawing only fills empty cells, so use Erase to make room. Powders, liquids and gases are sprinkled as you draw, while solids fill the whole brush.
+- Pick a category tab, pick an element, then paint on the canvas. **Filter** narrows long categories.
+- The tabs are Powders, Liquids, Solids, Gases, Special, Life, Food, Elements, Salts, Organic, Minerals, Alloys and Chemicals.
+- **Heat** and **Cold** change the temperature of whatever you paint over. **Erase** clears cells.
+- **Brush** sets the brush size, **Pause** / **Play** freezes the simulation, **Clear** empties the canvas.
+- **Save** and **Load** use three slots, chosen with the dropdown, kept in the browser's `localStorage`.
+- **Lookup** searches every element and describes how it behaves: its state, density, melting, boiling and ignition points, what it turns into, and what it reacts with. Click a result to select it.
 
-## Elements
+Light and dark themes follow the system setting.
 
-| Family | Element | Behavior |
-| --- | --- | --- |
-| Powder | Sand | Piles up and sinks through liquids. Turns to glass next to lava |
-| Powder | Dirt | Heavy powder |
-| Powder | Snow | Light powder that floats on water and melts near fire or lava |
-| Powder | Gunpowder | Burns in a rapid chain reaction when touched by fire or lava |
-| Powder | Ash | Light powder left behind by burning |
-| Liquid | Water | Flows, puts out fire, feeds plants, boils into steam |
-| Liquid | Oil | Floats on water and burns |
-| Liquid | Acid | Dissolves most solids and powders, and is slowly used up doing it |
-| Liquid | Lava | Thick and slow. Ignites things, melts ice and snow, makes glass from sand |
-| Solid | Stone | Forms when lava cools in water. Dissolves in acid |
-| Solid | Wall | Indestructible, even by TNT |
-| Solid | Wood | Burns for a long time |
-| Solid | Plant | Grows into nearby water. Flammable |
-| Solid | Ice | Melts into water near fire or lava |
-| Solid | Glass | Made from sand and lava |
-| Solid | TNT | Explodes when touched by fire or lava. Walls survive the blast |
-| Solid | Faucet | Pours water downward |
-| Solid | Void | Deletes anything touching it, except walls, faucets and other voids |
-| Gas | Fire | Burns for a short time, spreads to flammable neighbors, leaves smoke and sometimes ash |
-| Gas | Smoke | Rises and fades away |
-| Gas | Steam | Rises, then condenses back into water |
-| Gas | Gas | Rises and lingers. Burns almost instantly when lit |
+## Project structure
 
-## Reactions at a glance
+```
+index.html                 page markup; loads the scripts in dependency order
+css/styles.css             styles and theme variables
+js/
+  util.js                  $ and rnd shorthands
+  data/                    raw tables, as template strings
+    elements.js              base elements
+    reactions.js             base reactions
+    periodic-table.js        all 118 chemical elements with melting points, boiling points and densities
+    special-elements.js      hand-made specials, chemicals and body parts
+    extra-reactions.js       more hand-written reactions
+  generators/              code that expands the data into thousands of elements
+    helpers.js               shared helpers and the lists they fill
+    periodic-table.js        solid, liquid and gas forms, radioactive decay, metal powders
+    salts.js                 oxides, hydroxides, carbonates, nitrates... of every metal
+    organic.js               organic families, one to thirty carbons
+    alloys.js                every pair of 26 metals, plus named alloys
+    minerals.js              minerals, gems and rocks
+    life.js                  creatures, trees and plants
+    food.js                  raw, cooked, burnt and rotten food
+    special.js               registers the special elements and adds "<Name> Source" blocks
+  engine/
+    tables.js                master element list and the typed property arrays
+    reactions.js             reaction lookup: base table, extra table and generated rules
+    state.js                 grid arrays and shared state
+    simulation.js            per-cell rules and step()
+    renderer.js              colours, draw() and fit()
+  ui/
+    input.js                 painting with the pointer
+    palette.js               tools, tabs and the element palette
+    lookup.js                the Lookup dialog and element descriptions
+    controls.js              brush, pause, clear, save and load
+  main.js                  start-up and the animation loop
+```
 
-| Combination | Result |
-| --- | --- |
-| Fire + Water | Steam, and the fire goes out |
-| Lava + Water | Stone and steam |
-| Lava + Sand | Glass, gradually |
-| Fire or Lava + Snow or Ice | Water |
-| Fire or Lava + Wood, Plant, Oil, Gas, Gunpowder | Ignites |
-| Fire or Lava + TNT | Explosion with a radius of about 8 cells |
-| Acid + Sand, Dirt, Snow, Gunpowder, Ash, Stone, Wood, Plant, Ice, Glass, TNT | Dissolves them |
-| Plant + Water | More plant |
+The scripts are plain `<script>` tags rather than ES modules, so they share one global scope and the **load order in `index.html` matters**. This is also what lets the page work when opened straight from disk. A few lists built by the generators (`MT`, `ST`, `CRE`, `PLN`, `PER`) are read again by `engine/reactions.js`.
 
-## Things to try
+### How it fits together
 
-- Pour oil onto water, then drop a bit of fire on the oil.
-- Build a basin from Wall, fill it with water, and plant a few Plant cells at the edge.
-- Pack TNT inside a Wood box and light it, or line up TNT blocks to watch the chain.
-- Drop Lava onto Water for stone and a cloud of steam, or onto Sand for glass.
-- Put a Faucet above a basin with a Void at the bottom for a fountain that never floods.
-- Seal Gas inside a Wall chamber, then open a gap and add fire.
+1. `data/` holds the raw tables.
+2. `generators/` expand them into thousands of extra element lines.
+3. `engine/tables.js` joins every line into one element list and parses each element's options into typed arrays.
+4. `engine/reactions.js` builds the reaction lookup.
+5. `engine/state.js`, `simulation.js` and `renderer.js` run and draw the grid.
+6. `ui/` and `main.js` wire it to the page.
 
-## How it works
+## Data formats
 
-- The world is a grid of cells, 4 px each (3 px on narrow screens), stored in typed arrays: element type, a life timer, a color shade and a moved-this-frame stamp.
-- Each frame updates cells from bottom to top, flipping between left-to-right and right-to-left scans to avoid directional bias.
-- Powders and liquids fall by swapping with lighter cells below, using a density table. Liquids also spread sideways.
-- Gases rise and drift. Fire, smoke and steam count down a life timer.
-- Neighbor checks drive the reactions: burning, melting, dissolving and growing.
-- Explosions are queued and resolved after the main pass, which lets TNT trigger chains.
-- Rendering writes straight into an `ImageData` pixel buffer, and CSS scales the canvas with `image-rendering: pixelated`.
+### Elements
 
-## Hacking on it
+One element per line:
 
-Elements are defined in the `E` array at the top of the script. Density (`D`), flammability (`FL`) and burn time (`BL`) are lookup tables indexed by element id, and behavior lives in `upd` and `react`.
+```
+name|color|kind|density|options|category
+```
 
-To add an element:
+- **color**: six hex digits, no `#`.
+- **kind**: `1` powder, `2` liquid, `3` gas, `4` solid.
+- **density**: heavier things sink through lighter liquids and gases. Leave it blank for solids. Gases lighter than 1 rise; heavier ones sink and spread.
+- **options**: space-separated codes, listed below.
+- **category**: optional palette tab. Without it the tab comes from the kind, or from the name for a few special cases.
 
-1. Append it to the end of `E`. Ids are positions, so inserting in the middle shifts everything after it.
-2. Add an entry to `D`, and enlarge `FL` and `BL`, which are sized for 23 entries.
-3. Add its behavior to `upd` or `react`.
+Example from `js/data/elements.js`: `Gunpowder|55555e|1|5.2|i250 b8`
 
-## Ideas for later
+| Option | Meaning |
+|---|---|
+| `T<n>` | Starting temperature in °C (default 20) |
+| `K<n>` | Held temperature: the cell is forced to n °C every update (heaters, freezers) |
+| `h<n>>Name` | Above n °C it turns into Name |
+| `c<n>>Name` | Below n °C it turns into Name |
+| `i<n>` or `i<n>>Name` | Ignites above n °C, into fire or into Name |
+| `b<n>` | Burn time of the fire it leaves behind |
+| `x<n>` | Explodes with blast radius n when ignited |
+| `L<n>>Name` | Lifetime in updates, then turns into Name (or vanishes if no name) |
+| `f<n>` | Liquid flow: below 1 is the chance to move each update (thick liquids); 1 or more is how far it spreads sideways. Default 5 |
+| `s>Name` | Emits Name below it (above it for gases) |
+| `C` | Cloner: copies a touching element |
+| `V` | Void: deletes whatever touches it |
+| `P` | Plant: spreads into adjacent water |
+| `A` | Acid: dissolves powders and solids that aren't resistant |
+| `r` | Resistant to acid, voids and explosions |
+| `w1` `w2` `w3` | Creature that walks, swims or flies |
+| `d<p>>Name` | Radioactive decay: chance p per update to become Name, adding heat |
+| `g<p>>Name` | Ageing: chance p per update to become Name |
 
-- Heat and cold tools
-- Save and load worlds
-- Simulation speed control
-- More elements such as metal, salt, mud and seeds
+In `>Name` targets, spaces become underscores: `h1700>Molten_Glass`.
+
+### Reactions
+
+One reaction per line:
+
+```
+A+B>C+D chance
+```
+
+When A touches B, A becomes C and B becomes D, with that chance per update. An empty name clears the cell, so `Water+Salt>Salt Water+ .3` turns the water into salt water and removes the salt. Both orders are registered, and a pair that already has a reaction keeps its first definition.
+
+## Adding your own
+
+1. **An element:** add a line to `js/data/special-elements.js` (just before the closing backtick), for example `Pink Goo|ff4fa3|2|3.4|f.3|Special`.
+2. **A reaction:** add a line to `js/data/extra-reactions.js`, for example `Pink Goo+Salt>Slime+ .1`.
+3. Reload the page. The new element appears in its tab and in Lookup.
+
+**Heads-up about saves.** A saved slot stores each cell's element as its position in the generated list. Adding or reordering elements shifts those positions, so older saves can load as different elements. Appending to the end of `js/data/special-elements.js` disturbs the fewest of them (only the `Source` blocks that follow).
